@@ -1,0 +1,1 @@
+# AngularArquiteturaMaster-Detail
