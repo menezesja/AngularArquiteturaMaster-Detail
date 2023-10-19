@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 
-import { Observable, throwError, map, catchError, elementAt } from 'rxjs';
+import { Observable, throwError, map, catchError} from 'rxjs';
 import { Category } from './category.model';
 
 @Injectable({
@@ -54,6 +54,7 @@ export class CategoryService {
       map(() => null)
     )
   }
+  
   //private methods
 
   private jsonDataToCategories(jsonData: any[]): Category[]{
