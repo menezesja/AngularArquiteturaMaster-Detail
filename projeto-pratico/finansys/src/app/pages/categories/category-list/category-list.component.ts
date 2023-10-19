@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./category-list.component.css']
 })
 export class CategoryListComponent {
+alert(arg0: string) {
+throw new Error('Method not implemented.');
+}
 
 }
