@@ -1,12 +1,18 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PrimeNGConfig } from 'primeng/api';
 
 import { Entry, EntryService } from '../shared';
+import { Category } from '../../categories';
+import { CategoryService } from '../../categories';
 
 import { switchMap } from 'rxjs';
 
 import * as toasrt from 'toastr';
+
+
+
 
 @Component({
   selector: 'app-entry-form',
@@ -21,18 +27,45 @@ export class EntryFormComponent implements OnInit, AfterContentChecked{
   serverErrorMessages: string[] = null;
   submittingForm: boolean = false;
   entry: Entry = new Entry();
+  public ptBR: any;
+  categories: Array<Category>;
+
+  imaskConfig = {
+    mask: Number,
+    scale: 2,
+    thousandsSeparator: '',
+    padFractionalZeros: true,
+    normalizeZeros: true,
+    radix: ','
+  };
 
   constructor(
     private entryService: EntryService,
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private categoryService: CategoryService,
+    private primengConfig: PrimeNGConfig
   ) {}
 
   ngOnInit(){
     this.setCurrentAction();
     this.buildEntryForm();
     this.loadEntry();
+    this.loadCategories();
+
+    this.ptBR = {
+      firstDayOfWeek: 0,
+      dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+      dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+      dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
+      monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+      monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+      today: 'Hoje',
+      clear: 'Limpar'
+    };
+
+    this.primengConfig.setTranslation(this.ptBR);
   }
 
   ngAfterContentChecked(){
@@ -48,13 +81,23 @@ export class EntryFormComponent implements OnInit, AfterContentChecked{
       this.updateEntry();
   }
 
+  get typeOptions(): Array<any>{
+    return Object.entries(Entry.types).map(
+      ([value, text]) => {
+        return {
+          text: text,
+          value: value
+        }
+      }
+    )
+  }
+
   //private methods
   private setCurrentAction(){
     if(this.route.snapshot.url[0].path == "new")
       this.currentAction = "new"
     else
       this.currentAction = "edit"
-    
   }
 
   private buildEntryForm(){
@@ -84,6 +127,11 @@ export class EntryFormComponent implements OnInit, AfterContentChecked{
     }
   }
 
+  private loadCategories(){
+    this.categoryService.getAll().subscribe(
+      categories => this.categories = categories
+    );
+  }
 
   private setPageTitle(){
     if(this.currentAction == 'new')
@@ -132,6 +180,4 @@ export class EntryFormComponent implements OnInit, AfterContentChecked{
     else
       this.serverErrorMessages = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."]
   }
-
-
 }
