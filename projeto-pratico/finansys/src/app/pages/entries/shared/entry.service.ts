@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 
-import { Observable, throwError, map, catchError} from 'rxjs';
+import { Observable, throwError, map, catchError, mergeMap} from 'rxjs';
 import { Entry } from './entry.model';
+import { CategoryService } from '../../categories';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class EntryService {
 
   private apiPath: string = "api/entries";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private categoryService: CategoryService) { }
 
 
   getAll(): Observable<Entry[]>{
@@ -31,18 +32,30 @@ export class EntryService {
   }
 
   create(entry: Entry): Observable<Entry>{
+    return this.categoryService.getByID(entry.categoryId).pipe(
+      mergeMap(category => {
+        entry.category = category;
+
     return this.http.post(this.apiPath, entry).pipe(
       catchError(this.handlerError),
       map(this.jsonDataToEntry)
-    )
-  }
+      )
+    })
+  );
+}
 
   update(entry: Entry): Observable<Entry> {
     const url = `${this.apiPath}/${entry.id}`;
 
-    return this.http.put(url, entry).pipe(
-      catchError(this.handlerError),
-      map(() => entry)
+    return this.categoryService.getByID(entry.categoryId).pipe(
+      mergeMap(category => {
+        entry.category = category;
+
+        return this.http.put(url, entry).pipe(
+          catchError(this.handlerError),
+          map(() => entry)
+        )
+      })
     )
   }
 
