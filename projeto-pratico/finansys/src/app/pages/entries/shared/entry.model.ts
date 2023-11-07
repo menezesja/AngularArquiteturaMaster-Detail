@@ -1,5 +1,6 @@
-import { Category } from "../../categories";
 import { BaseResourceModel } from "src/app/shared";
+import { Category } from "../../categories";
+
 export class Entry extends BaseResourceModel {
     constructor(
         public override id?: number,
@@ -18,8 +19,12 @@ export class Entry extends BaseResourceModel {
     static types = {
         expense: 'Despesa',
         revenue: 'Receita'
-      };
-    
+    };
+
+    static fromJson(jsonData: any): Entry {
+        return Object.assign(new Entry(), jsonData);
+    }
+
     get paidText(): string {
         return this.paid ? 'Pago' : 'Pedente';
     }
