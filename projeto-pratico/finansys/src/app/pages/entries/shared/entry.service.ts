@@ -31,5 +31,4 @@ export class EntryService extends BaseResourceService <Entry> {
       catchError(this.handlerError)
     );
   }
-
 }
