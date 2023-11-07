@@ -8,11 +8,7 @@ import { Category } from '../../categories';
 import { CategoryService } from '../../categories';
 
 import { switchMap } from 'rxjs';
-
 import * as toasrt from 'toastr';
-
-
-
 
 @Component({
   selector: 'app-entry-form',

@@ -3,7 +3,7 @@ import { BaseResourceService } from 'src/app/shared/services';
 import { Entry } from './entry.model';
 import { CategoryService } from '../../categories';
 
-import { Observable, mergeMap} from 'rxjs';
+import { Observable, catchError, mergeMap} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +15,21 @@ export class EntryService extends BaseResourceService <Entry> {
   }
 
   override create(entry: Entry): Observable<Entry>{
-    return this.categoryService.getByID(entry.categoryId).pipe(
-      mergeMap(category => {
-        entry.category = category;
-        return super.create(entry);
-      })
-  );
-}
+    return this.setCategoryAndSendToServer(entry, super.create.bind(this));
+  }
 
   override update(entry: Entry): Observable<Entry> {
+    return this.setCategoryAndSendToServer(entry, super.update.bind(this));
+  }
+
+  private setCategoryAndSendToServer(entry: Entry, sendFn: any): Observable<Entry>{
     return this.categoryService.getByID(entry.categoryId).pipe(
       mergeMap(category => {
         entry.category = category;
-        return super.update(entry);
-      })
-    )
+        return sendFn(entry)
+      }),
+      catchError(this.handlerError)
+    );
   }
 
 }
