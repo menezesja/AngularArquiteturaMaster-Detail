@@ -1,15 +1,2 @@
-.breadcrumb {
-    background-color: #d7dff6;
-    border-radius: 3px;
-    padding: 8px 15px;
-    margin-bottom: 20px;
-}
 
-.breadcrumb-item.active,
-.breadcrumb-item.active:hover,
-.breadcrumb-item.active:focus {
-    color: #333;
-    text-decoration: none;
-    background-color: transparent;
-}
 
