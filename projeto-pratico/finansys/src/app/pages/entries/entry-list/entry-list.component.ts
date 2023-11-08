@@ -14,4 +14,3 @@ export class EntryListComponent extends BaseResourceListComponent<Entry> {
     super(entryService);
   }
 }
-//refactoring lançamentos
