@@ -3,3 +3,4 @@ export * from './base-resource-list/base-resource-list.component';
 export * from './bread-crumb/bread-crumb.component';
 export * from './page-header/page-header.component';
 export * from './form-field-error/form-field-error.component';
+export * from './server-error-messages/server-error-messages.component';
